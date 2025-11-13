@@ -62,9 +62,20 @@ class AddTaskActivity : AppCompatActivity() {
                 binding.apply {
                     etTitle.setText(it.title)
                     etDescription.setText(it.description)
-                    tvDueDateValue.text = it.dueDate ?: "Select Date"
                     cbIsCompleted.isChecked = it.isCompleted
                     taskId = it.id
+
+                    val millTime = it.dueDate.toLong()
+                    val calendar = android.icu.util.Calendar.getInstance()
+                    calendar.timeInMillis = millTime
+
+                    binding.datePicker.updateDate(
+                        calendar.get(android.icu.util.Calendar.YEAR),
+                        calendar.get(android.icu.util.Calendar.MONTH),
+                        calendar.get(android.icu.util.Calendar.DAY_OF_MONTH)
+                    )
+
+
                 }
                 selectedDate = task?.dueDate ?: ""
                 isCompleted = task?.isCompleted ?: false
