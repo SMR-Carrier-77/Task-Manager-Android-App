@@ -10,7 +10,6 @@ import com.example.task_manager_app.db.Task
 import com.example.task_manager_app.db.TaskDao
 import com.example.task_manager_app.db.TaskDatabase
 
-@Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity(), TaskAdapter.HandleTaskClick {
 
     private lateinit var binding: ActivityMainBinding
@@ -29,21 +28,22 @@ class MainActivity : AppCompatActivity(), TaskAdapter.HandleTaskClick {
             "Task_DB"
         ).allowMainThreadQueries().build()
 
-            dao = it.getTaskDao()
+        dao = db.getTaskDao()
 
 
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         showTasks()
 
-        binding.btn2.setOnClickListener {
-            val i = Intent(this, AddTaskActivity::class.java)
-            startActivity(i)
+        binding.btnAdd.setOnClickListener {
+            var intent = Intent(this, AddTaskActivity::class.java)
+            startActivity(intent)
         }
+
     }
 
     private fun showTasks() {
-        taskList = dao.getAllTask()
-        adapter = TaskAdapter(this, taskList)
+        taskList = dao.getAllTask().sortedBy { it.dueDate }.toMutableList()
+        adapter = TaskAdapter(this,this,  taskList.toMutableList())
         binding.recyclerView.adapter = adapter
     }
 
@@ -61,5 +61,5 @@ class MainActivity : AppCompatActivity(), TaskAdapter.HandleTaskClick {
     override fun onResume() {
         super.onResume()
         showTasks()
-    }
+        }
 }

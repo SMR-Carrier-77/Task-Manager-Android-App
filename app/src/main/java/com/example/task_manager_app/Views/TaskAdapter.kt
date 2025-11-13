@@ -1,12 +1,19 @@
 package com.example.task_manager_app.Views
 
+import android.content.Context
+import android.icu.text.SimpleDateFormat
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.UiContext
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
+import com.example.task_manager_app.R
 import com.example.task_manager_app.databinding.ItemTaskBinding
 import com.example.task_manager_app.db.Task
+import java.util.Date
+import java.util.Locale
 
-class TaskAdapter(val listener: HandleTaskClick, val list: List<Task>) :
+class TaskAdapter(val listener: HandleTaskClick, var context: Context, val list: MutableList<Task>) :
     RecyclerView.Adapter<TaskAdapter.TaskVH>() {
 
     interface HandleTaskClick {
@@ -24,14 +31,31 @@ class TaskAdapter(val listener: HandleTaskClick, val list: List<Task>) :
         holder.binding.apply {
             tvTitle.text = task.title
             tvDescription.text = task.description
-            tvDueDate.text = "Due: ${task.dueDate ?: "N/A"}"
             cbCompleted.isChecked = task.isCompleted
+
+            var dueDate = task.dueDate.toLong()
+
+            val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            val formattedDate = formatter.format(Date(dueDate))
+
+            tvDueDate.text = formattedDate
 
             btnEdit.setOnClickListener {
                 listener.onEditClick(task)
             }
             btnDelete.setOnClickListener {
-                listener.onLongDeleteClick(task)
+
+                AlertDialog.Builder(context)
+                    .setTitle("Warning")
+                    .setMessage("Are you sure you want to delete this task?")
+                    .setPositiveButton("Yes"){dialog,_ ->
+                        listener.onLongDeleteClick(task)
+                    }
+                    .setNegativeButton("No"){dialog,_ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+
             }
         }
     }

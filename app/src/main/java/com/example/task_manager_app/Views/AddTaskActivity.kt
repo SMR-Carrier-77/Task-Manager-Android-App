@@ -10,7 +10,7 @@ import com.example.task_manager_app.databinding.ActivityAddTaskBinding
 import com.example.task_manager_app.db.Task
 import com.example.task_manager_app.db.TaskDao
 import com.example.task_manager_app.db.TaskDatabase
-
+import java.util.Calendar
 
 @Suppress("DEPRECATION")
 class AddTaskActivity : AppCompatActivity() {
@@ -33,7 +33,7 @@ class AddTaskActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Database setup
-        val db = Room.databaseBuilder(
+        var db = Room.databaseBuilder(
             applicationContext,
             TaskDatabase::class.java,
             "Task_DB"
@@ -47,11 +47,11 @@ class AddTaskActivity : AppCompatActivity() {
                 if (binding.datePicker.visibility == View.VISIBLE) View.GONE else View.VISIBLE
         }
 
-        // Handle date picker change
-        binding.datePicker.setOnDateChangedListener { _: DatePicker, year, month, day ->
-            selectedDate = "$day/${month + 1}/$year"
-            binding.tvDueDateValue.text = selectedDate
-        }
+        val calendar = android.icu.util.Calendar.getInstance()
+        calendar.set(binding.datePicker.year, binding.datePicker.month, binding.datePicker.dayOfMonth)
+        selectedDate = calendar.timeInMillis.toString()
+
+
 
         // Check if Edit mode
         if (intent.hasExtra(EDIT_KEY)) {
@@ -84,30 +84,33 @@ class AddTaskActivity : AppCompatActivity() {
             val title = binding.etTitle.text.toString().trim()
             val description = binding.etDescription.text.toString().trim()
 
-            if (title.isEmpty() || description.isEmpty()) {
+            if (title.isEmpty() ) {
                 binding.etTitle.error = "Enter title"
+                return@setOnClickListener
+            }else if (description.isEmpty()){
+                binding.etDescription.error = "Enter description"
                 return@setOnClickListener
             }
 
             if (binding.btnSaveTask.text.toString() == ADD_TEXT) {
-                addTask(title, description)
+                addTasks(title, description)
             } else {
-                updateTask(title, description)
+                updateTasks(title, description)
             }
         }
     }
 
-    private fun updateTask(title: String, description: String) {
+    private fun updateTasks(title: String, description: String) {
         val task = Task(taskId, title, description, selectedDate, isCompleted)
-        dao.updateTask(task)
+        dao.editTask(task)
         startActivity(Intent(this, MainActivity::class.java))
         finish()
     }
 
-    private fun addTask(title: String, description: String) {
+    private fun addTasks(title: String, description: String) {
         val task = Task(0, title, description, selectedDate, isCompleted)
         dao.addTask(task)
         startActivity(Intent(this, MainActivity::class.java))
         finish()
-    }
+        }
 }

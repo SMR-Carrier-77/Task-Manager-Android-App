@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Task_Manager_App">
         <activity
-            android:name=".Views.Add_TaskActivity"
+            android:name=".Views.AddTaskActivity"
             android:exported="false" />
         <activity
             android:name=".Views.MainActivity"

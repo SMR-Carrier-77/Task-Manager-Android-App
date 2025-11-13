@@ -6,23 +6,18 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 
-class TaskDao {
+@Dao
+interface TaskDao {
 
+    @Insert
+    fun addTask(task: Task)
 
+    @Update
+    fun editTask(task: Task)
 
-    @Dao
-    interface TaskDao {
-        @Insert
-        fun addTask(task: TaskDao)
+    @Delete
+    fun deleteTask(task: Task)
 
-        @Update
-        fun editTask(task: TaskDao)
-
-        @Delete
-        fun deleteTask(task: TaskDao)
-
-        @Query("SELECT*FROM Task")
-        fun getAllTask(): List<Task>
-
-    }
+    @Query("SELECT * FROM Task")
+    fun getAllTask(): MutableList<Task>
 }

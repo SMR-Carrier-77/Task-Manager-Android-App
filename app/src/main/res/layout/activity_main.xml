@@ -17,7 +17,7 @@
         tools:listitem="@layout/item_task" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn2"
+        android:id="@+id/btnAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add New Task"
@@ -25,13 +25,12 @@
         android:textColor="#FFFFFF"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_margin="16dp"
+        android:layout_margin="16sp"
         app:icon="@drawable/add_user_left_4_svgrepo_com"
         app:iconPadding="8dp"
         app:iconTint="@android:color/white"
         app:iconGravity="textStart"
-        android:backgroundTint="#731C39" />
-
-
+        android:backgroundTint="#731C39"
+        />
 
 </RelativeLayout>
